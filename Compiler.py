@@ -107,7 +107,7 @@ def lex():
                 Dchar = Dchar + schar #put it with others
                 if(Dchar in keywords):
                     return (Dchar, "keyword", line)
-                schar = input_file.read(1) #read the next fgfg
+                schar = input_file.read(1) #read the next
             schar = input_file.read(1) #read the next
             if (schar=="#"):
                 return(0,0,0)
