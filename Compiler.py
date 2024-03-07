@@ -27,7 +27,7 @@ def lex():
             if (Char_counter <= 30): #check the range
                 Dchar = Dchar + schar #put it with others
                 schar = input_file.read(1) #read the next
-            else:                      #else is out of range                  poy eiani to chat?
+            else:                      #else is out of range                  
                 print ("Identifier over range you can use <= 30 characters")
                 sys.exit(0)
         if(schar.isalpha()==False or schar.isdigit()==False):
