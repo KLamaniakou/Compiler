@@ -452,8 +452,7 @@ def whileStat():
 #Main 
 def main():
     while (not eof):
-        t= lex()       
-        print(t[0])                                         
+        t= lex()                                             
         new_token = Token(t[0],t[1],t[2]) 
         all_t.append(new_token)
     syntax_analyzer()
