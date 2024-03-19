@@ -70,14 +70,25 @@ def lex():
             Dchar = Dchar + schar
             return (Dchar, "relOperator", line)   #then return <=
         else:
-            return (Dchar, "relOperator", line)    #else return <
+            input_file.seek(input_file.tell() - 1)
+            return (Dchar, "relOperator", line)   
+    elif (schar == "!"): 
+        Dchar = schar
+        schar = input_file.read(1)   
+        if (schar == "="):  
+            Dchar = Dchar + schar
+            return (Dchar, "relOperator", line) 
+        else:
+            input_file.seek(input_file.tell() - 1)
+            return (Dchar, "relOperator", line)    
     elif (schar == ">"):   #same logic like the less and less equal
         Dchar = schar
         schar = input_file.read(1) 
         if (schar == "="):
             Dchar = Dchar + schar
             return (Dchar, "relOperator", line)  #return >=
-        else:     
+        else:
+            input_file.seek(input_file.tell() - 1)     
             return (Dchar, "relOperator", line)   #return >
     elif (schar == "="):
         Dchar = schar
@@ -87,7 +98,7 @@ def lex():
             return (Dchar, "relOperator", line) #return ==
         else:
             input_file.seek(input_file.tell() - 1)
-            return (Dchar, "assignment", line) #return =
+            return (Dchar, "relOperator", line) #return =
     elif (schar == "," or schar == ":"):  #check for delimiter
         Dchar = schar
         return (Dchar, "delimiter", line) 
@@ -115,13 +126,29 @@ def lex():
                 input_file.seek(input_file.tell() - 1)
             else:
                 if(schar == "#"):
-                    return(0,0,0)
+                    return (0, 0, 0)
                 else:
                     print("Comment section not closed, comment starts at line " + str(line))
                     eof=True
-                    return(0,0,0)
+                    return (0, 0, 0)
+        elif (schar.isalpha()): #if is char
+            Char_counter = 1  #count the character to check later the range
+            Dchar = schar     #save the first char
+            schar = input_file.read(1) #read the second
+            while (schar.isalpha()):  #after 1 char we can have numbers
+                Char_counter += 1  #counter++
+                if (Char_counter <= 4): #check the range
+                    Dchar = Dchar + schar #put it with others
+                    schar = input_file.read(1) #read the next
+                else:                      #else is out of range                  
+                    print ("wrong declarasion")
+                    sys.exit(0)
+            if(schar.isalpha()==False or schar.isdigit()==False):
+                input_file.seek(input_file.tell() - 1)
+            if (Dchar in keywords):   #check the word if its in the keywords
+                return ("#"+Dchar, "keyword", line) 
         else:
-            print ("error" + schar +  " at line " + str(line))
+            print ("error " + schar +  " at line " + str(line))
             sys.exit(0)
     else:
         print ("Invalid Character \"" + schar + "\" at line " + str(line))
@@ -131,7 +158,7 @@ def lex():
 def syntax_analyzer():
     global token
     token = get_token()
-    program()
+    startRule()
     print("Compilation successfully completed")  
 
 def get_token():
@@ -139,316 +166,407 @@ def get_token():
     global all_ts
     index += 1
     if (index == len(all_t)):
-    #    print("DEBUG: End Token ")                                  # For Debugging Purposes
         return (Token("",0,0))
-    #print("DEBUG: Examining Token : " + str(all_ts[index]))     # For Debugging Purposes
     return (all_t[index])
 
-def error(typeOfError):
-    global line 
-    global token
-    errors = {
-        "validId": "A valid id was expected at line ",
-        "plusOrMinus": "A \"+\" or \"-\" was expected at line ",
-        "mulOrDiv": "A \"*\" or \"/\" was expected at line ",
-        "asgnSym": "The \":=\" was expected at line ",
-        "closeCurBracket": "Curly bracket hasn't closed at line ",
-        "openCurBracket": "Curly bracket expected at line ",
-        "closeSqBracket": "Square bracket hasn't closed at line ",
-        "openSqBracket": "Square bracket expected at line ",
-        "closeParentheses": "Parentheses hasn't closed at line ",
-        "openParentheses": "Parentheses expected at line ",
-        "numExprId": "Number/(Expression)/ID expected at line ",
-        "defaultNotFound": "Default case not found around line ",
-        "programKeywordNF": "\"program\" keyword not found at line ",
-        "dotExpected": "A \".\" was expected at line ",
-        "eofExpected": "Characters found after \".\", line ",
-        "relOpExpected": "One of the =, <=, >=, >, <, <> symbols are expected at line ",
-        "semicolonExpected": "A \";\" was expected at line ",
-        "invalidFuncName": "Invalid function name at line ",
-        "invalidProcName": "Invalid procedure name at line "
-    }
-    print(errors[typeOfError] + str(token.line_number))
-    sys.exit()
+def startRule():
+    def_main_part()
+    call_main_part()
 
-def addoperator():
+def def_main_part():
     global token
-    if (token.recognized_string == "+"):
+    declarations()
+    def_main_function()
+    while token.recognized_string=="def":
+        def_main_function()
+
+def def_main_function():
+    global token
+    if token.recognized_string=="def":
         token = get_token()
-    elif (token.recognized_string == "-"):
-        token = get_token()
+        if token.family == "identifier":
+            token = get_token()
+            if token.recognized_string == "(":
+                token = get_token()
+                id_list()
+                if token.recognized_string==")":
+                    token = get_token()
+                    if token.recognized_string == ":":
+                        token = get_token()
+                        if token.recognized_string==0:
+                            token=get_token()
+                        if token.recognized_string == "#{":
+                            token=get_token()
+                            declarations()
+                            while token.recognized_string == "def":
+                                def_main_function()
+                            declarations() 
+                            statements()
+                            if token.recognized_string == "#}":
+                                token=get_token()
+                            else:
+                                print("Error,the program does not have #} after #{ at main function in line",token.line_number)
+                                exit(-1)
+                        else:
+                            print("Error,the program does not have #{ after main function in line",token.line_number)
+                            exit(-1)
+                    else:
+                        print("Error,the program does not have : after main function in line",token.line_number)
+                        exit(-1)
+                else:
+                    print("Error,the program does not have a ) after ( at main function in line",token.line_number)
+                    exit(-1)
+            else:
+                print("Error,the program does not have ( after main function in line",token.line_number)
+                exit(-1)
+        else:
+            print("Error,the program does not have a name for main function in line",token.line_number)
+            exit(-1)
     else:
-        error("plusOrMinus") # +, -
-        
-def assignStat():
-    global token
-    if (token.family == "id"):
-        eplace = ""
-        x = token.recognized_string
-        token = get_token()
-    else: 
-        error("validId") # not an id, is (another family)
-
-def blockstatements():
-    global token
-    statement()
-    while (token.recognized_string == ";"):
-        token = get_token()
-        statement()
+        print("Error,the program doesnt start with def  at main function in line", token.line_number)
+        exit(-1)
 
 def declarations():
     global token
-    while (token.recognized_string == "declare"):
-        token = get_token()
-        varlist()
-        if (token.recognized_string == ";"):
-            token = get_token()
-        else:
-            error("semicolonExpected") # ";" expected but something else came
+    while token.recognized_string == "#int" or token.recognized_string =="global":
+        declaration_line()
 
-def elsepart():
+def declaration_line():
     global token
-    if (token.recognized_string == "else"):
+    if token.recognized_string == "#int" or token.recognized_string =="global":
         token = get_token()
-        statements()
+        id_list()
 
-def ifStat():
+def id_list():
     global token
-    token = get_token() # consume if
-    if (token.recognized_string == "("):
+    if token.family == "identifier":
+        line=token.line_number
         token = get_token()
-        if (token.recognized_string == ")"):
+        while token.recognized_string == ",":
             token = get_token()
-            statements()
-        else:
-            error("closeParentheses")
-    else:
-        error("openParentheses")
-    
-def inputStat():
-    global token
-    idplace = ""
-    token = get_token() # consume input
-    if (token.recognized_string == "("):
-        token = get_token()
-        if (token.family == "id"):
-            idplace = token.recognized_string
-            token = get_token()
-            if (token.recognized_string == ")"):
+            if token.family == "identifier":
                 token = get_token()
             else:
-                error("closeParentheses") # ) expected
-        else:
-            error("validId") # a valid id expected
-    else:
-        error("openParentheses") # ( expected
-
-def muloperator():
-    global token
-    if (token.recognized_string == "*"):
-        token = get_token()
-    elif (token.recognized_string == "/"):
-        token = get_token()
-    else:
-        error("mulOrDiv") # *, /
-
-def optionalSign():
-    global token
-    global index
-    if (token.recognized_string == "+" or token.recognized_string == "-"):
-        addoperator()
-
-def printStat():
-    global token
-    eplace = ""
-    token = get_token() # consume print
-    if (token.recognized_string == "("):
-        token = get_token()
-        if (token.recognized_string == ")"):
-            token = get_token()
-        else:
-            error("closeParentheses") # ) expected
-    else:
-        error("openParentheses") # ( expected
-
-def program():
-    global token
-    global main_name
-    if (token.recognized_string == "program"):
-        token = get_token()
-        if (token.family == "id"):
-            main_name = token.recognized_string
-            token = get_token()
-            if (token.recognized_string == "."):
-                token = get_token()
-                if (token.recognized_string == ""):
-                    pass
-                else:
-                    error("eofExpected")
-            else:
-                error("dotExpected")
-        else:
-            error("validId")
-    else:
-        error("programKeywordNF")
-
-def reloperator():
-    global token
-    relop = ""
-    if (token.recognized_string == "="):
-        relop = token.recognized_string
-        token = get_token()
-    elif (token.recognized_string == "<="):
-        relop = token.recognized_string
-        token = get_token()
-    elif (token.recognized_string == ">="):
-        relop = token.recognized_string
-        token = get_token()
-    elif (token.recognized_string == ">"):
-        relop = token.recognized_string
-        token = get_token()
-    elif (token.recognized_string == "<"):
-        relop = token.recognized_string
-        token = get_token()
-    elif (token.recognized_string == "<>"):
-        relop = token.recognized_string
-        token = get_token()
-    else:
-        error("relOpExpected") # =, <=, >=, >, <, <> expected
-    return (relop)
-
-def returnStat():
-    global token
-    global ret
-    eplace = ""
-    token = get_token() # consume return
-    if (token.recognized_string == "("):
-        token = get_token()
-        if (token.recognized_string == ")"):
-            token = get_token()
-            ret = True
-        else:
-            error("closeParentheses") # ) expected
-    else:
-        error("openParentheses") # ( expected
+                print("Error,there is not identifier after , in line",token.line_number)
+                exit(-1)
+        if token.family == "identifier" and token.line_number==line:
+            print("Error,there is not , between arguments in line",token.line_number)
 
 def statement():
     global token
-    global index
-    token = get_token()
-    if (token.recognized_string == ":="):
-        index -= 2
-        token = get_token()
-        assignStat()
-    else:
-        index -= 2
-        token = get_token()
-    if (token.recognized_string == "if"):
-        ifStat()
-    elif (token.recognized_string == "while"):
-        whileStat()
-    elif (token.recognized_string == "return"):
-        returnStat()
-    elif (token.recognized_string == "input"):
-        inputStat()
-    elif (token.recognized_string == "print"):
-        printStat()
-    elif (token.recognized_string == "default"):
-        token = get_token()
-        statement()
+    if token.family == "identifier" or token.recognized_string == "print" or token.recognized_string == "return":
+        simple_statement()
+    elif token.recognized_string == "if" or token.recognized_string == "while":
+        structured_statement()
 
 def statements():
     global token
-    if (token.recognized_string == "{"):
-        token = get_token()
-        statement()
-        while (token.recognized_string == ";"):
-            token = get_token()
-            statement()
-        if (token.recognized_string == "}"):
-            token = get_token()
-        else: 
-            error("closeCurBracket") # } expected
-    else:
-        statement()
-        if (token.recognized_string == ";"):
-            token = get_token()
-        else: 
-            error("semicolonExpected") # ; expected
+    if token.recognized_string==0:
+        token=get_token()
+    declarations()        
+    statement()
+    while token.recognized_string == "def":
+        def_main_function()
+    if token.recognized_string==0:
+        token=get_token()
+    declarations()
+    statement()
+    while token.family == "identifier" or token.recognized_string == "print" or token.recognized_string == "return" or token.recognized_string == "if"  or token.recognized_string == "while":
+        if token.recognized_string==0:
+            token=get_token()
+        statement() 
 
-def subprogram():
+def simple_statement():
     global token
-    global label
-    global ret
-    id = ""
-    if (token.recognized_string == "function"):
-        token = get_token()
-        if (token.family == "id"):
-            id = token.recognized_string         
-            token = get_token()
-            if (token.recognized_string == "("):
-                token = get_token()
-                if (token.recognized_string == ")"):
-                    token = get_token()
-                    if (ret == False):
-                        print("Function has not return statement")
-                        sys.exit(0)
+    if token.family =="identifier":
+        assignment_stat()
+    elif token.recognized_string == "print":
+        print_stat()
+    elif token.recognized_string == "return":
+        return_stat()
+
+def structured_statement():
+    global token    
+    if token.recognized_string == "if":
+        if_stat()
+    elif token.recognized_string == "while":
+        while_stat()
+
+def assignment_stat():
+    global token
+    if token.family == "identifier":
+        token=get_token()
+        if token.recognized_string =="=":
+            token=get_token()
+            if token.recognized_string =="int":
+                token=get_token()
+                if token.recognized_string =="(":
+                    token=get_token()
+                    if token.recognized_string =="input":
+                        token=get_token()
+                        if token.recognized_string =="(":
+                            token=get_token()
+                            if token.recognized_string ==")":
+                                token=get_token()
+                                if token.recognized_string ==")":
+                                    token=get_token()
+                                else:
+                                    print("Error,there is not ) after int( in line", token.line_number)
+                                    exit(-1)
+                            else:
+                                print("Error,there is not ) after input( in line", token.line_number)
+                                exit(-1)
+                        else:
+                            print("Error,there is not ( after input in line",token.line_number)
+                            exit(-1)
+                    else:
+                        print("Error,there is not input after ( in line",token.line_number)
+                        exit(-1)
                 else:
-                    error("closeParentheses") # ")" not found
+                    print("Error,there is not ( after int in line",token.line_number)
+                    exit(-1)
             else:
-                error("openParentheses") # "(" not found
-        else: 
-            error("invalidFuncName") # a valid function name is expected
+                expression()
+        else:
+            print("Error, there is not = for assignment statement in line",token.line_number)
+            exit(-1)
+    else:
+        print("Error,there is not an identifier for assignment in line",token.line_number)
+        exit(-1)
 
-def subprograms():
+def print_stat():
     global token
-    while (token.recognized_string == "function"):
-        subprogram()
+    if token.recognized_string =="print":
+        token=get_token()
+        expression()
+    else:
+        print("Error,there is not print in line",token.line_number)
+        exit(-1)
+
+def return_stat():
+    global token
+    if token.recognized_string =="return":
+        token=get_token()
+        expression()
+    else:
+        print("Error,there is not return in line",token.line_number)
+        exit(-1)
+
+def if_stat():
+    global token
+    if token.recognized_string =="if":
+        token=get_token()
+        condition()
+        if token.recognized_string ==":":
+            token=get_token()
+            statement()
+            elif_stat()
+            if token.recognized_string =="else":
+                token=get_token()
+                if token.recognized_string ==":":
+                    token=get_token()
+                    if token.recognized_string =="#{":
+                        token=get_token()
+                        statements()
+                        if token.recognized_string =="#}":
+                            token=get_token()
+                        else:
+                            print("Error there is not #} after else: #{ in line", token.line_number)
+                            exit(-1)
+                    else:
+                        statement()
+                else:
+                    print("Error,there is not : after else in line",token.line_number)
+                    exit(-1)
+        else:
+            print("Error,there is not : after if in line",token.line_number)
+            exit(-1)
+    else:
+        print("Error,there is not if in line",token.line_number)
+        exit(-1)
+def elif_stat():
+    global token
+    if token.recognized_string =="elif":
+        token=get_token()
+        condition()
+        if token.recognized_string ==":":
+            token=get_token()
+            statement()
+def while_stat():
+    global token
+    if token.recognized_string =="while":
+        token=get_token()
+        condition()
+        if token.recognized_string ==":":
+            token=get_token()
+            if token.recognized_string=="#{":
+                token=get_token()
+                statements()
+                if token.recognized_string=="#}":
+                    token=get_token()
+                else:
+                    print("Error there is not #} after while #{ in line", token.line_number)
+                    exit(-1)
+            else:
+                statement()
+        else:
+            print("Error,there is not : after while in line", token.line_number)
+            exit(-1)
+    else:
+        print("Error,there is not while in line", token.line_number)
+        exit(-1)
+
+def expression():
+    global token
+    term()
+    while token.family =="addOperator":
+        ADD_OP()
+        term()
 
 def term():
     global token
-    global index
-    while (token.recognized_string == "*" or token.recognized_string == "/"):
-        operator = token.recognized_string
-        muloperator()
-        f1place = x
-        if (token.recognized_string == ")"):
-            token = get_token()
-            if (token.recognized_string == ";"):
-                index -= 2
-                token = get_token()
-    eplace = f1place
-    if (token.family == "keyword"):  # catch a case where after ")" we get a keyword, so we don"t skip token
-        if (token.recognized_string != "and" and token.recognized_string != "or"):
-            index -= 2
-            token = get_token()
-    return (eplace)
+    factor()
+    while token.family=="mulOperator":
+        MUL_OP()
+        factor()
 
-def varlist():
+def factor():
     global token
-    global variables
-    if (token.family == "id"):
-        variables.append(token.recognized_string)          
+    if token.family == "number":
         token = get_token()
-        while (token.recognized_string == ","):
-            token = get_token()
-            variables.append(token.recognized_string)           
-            if (token.family == "id"):
+    elif token.recognized_string == "(":
+        token = get_token()
+        expression()
+        if token.recognized_string == ")":
                 token = get_token()
-            else:
-                error("validId") # id expected, something else came
-
-def whileStat():
-    global token
-    token = get_token() # consume while
-    if (token.recognized_string == "("):
-        if (token.recognized_string == ")"):
+        else:
+            print("Error,there is not ) after ( at factor in line", token.line_number)
+            exit(-1)
+    elif token.family == "identifier":
+        token = get_token()
+        idtail(token.recognized_string)
+    elif token.recognized_string == "-":
+        if token.family == "number":
             token = get_token()
+    else:
+        print("Error,there is not numerical constant or expression or identifier at factor in line", token.line_number)
+        exit(-1)
+
+def idtail(function_name):
+    global token
+    if token.recognized_string == "(":
+        token = get_token()
+        actual_par_list()
+        if token.recognized_string == ")":
+            token = get_token()
+        else:
+            print("Error ,there is not ) after ( at idtail ",token.line_number)
+            exit(-1)
+    else:
+        return function_name
+def actual_par_list():
+    global token
+    if token.family== "number" or token.recognized_string== "(" or token.family== "identifier":
+        expression()
+        while token.recognized_string== ",":
+            token=get_token()
+            expression()
+
+def optional_sign():
+    global token
+    if token.family== "addOperator":
+            ADD_OP()
+
+def ADD_OP():
+    global token
+    if token.recognized_string== "+":
+        token=get_token()
+    elif token.recognized_string== "-":
+        token=get_token()
+
+def MUL_OP():
+    global token
+    if token.recognized_string == "*":
+        token=get_token()
+    elif token.recognized_string == "//":
+        token=get_token()
+    elif token.recognized_string =="%":
+        token=get_token()
+
+def condition():
+    global token
+    bool_term()
+    while token.recognized_string== "or":
+        token=get_token()
+        bool_term()
+
+def bool_term():
+    global token
+    bool_factor()
+    while token.recognized_string== "and":
+        token=get_token()
+        bool_factor()
+
+def bool_factor():
+    global token
+    if token.recognized_string== "not":
+        token=get_token()
+        if token.family== "(":
+            token=get_token()
+            condition()
+            if token.recognized_string== ")":
+                token=get_token()
+            else:
+                print("Error,there is not ) after not( at boolfactor in line",token.line_number)
+                exit(-1)
+        else:
+            print("Error,there is not ( after not at boolfactor in line",token.line_number)
+            exit(-1)
+    elif token.recognized_string== "(":
+        token=get_token()
+        condition()
+        if token.recognized_string== ")":
+            token=get_token()
+        else:
+            print("Error,there is not ) after ( at boolfactor in line",token.line_number)
+            exit(-1)
+    else:
+        expression()
+        REL_OP()
+        expression()
+
+def REL_OP():
+    global token
+    if token.recognized_string== "==":
+        token=get_token()
+    elif token.recognized_string== "!=":
+        token=get_token()
+    elif token.recognized_string== "<":
+        token=get_token()
+    elif token.recognized_string== "<=":
+        token=get_token()
+    elif token.recognized_string== ">":
+        token=get_token()
+    elif token.recognized_string== ">=":
+        token=get_token()
+    else:
+        print("Error,there is not == or != or > or >= or < or <= in line", token.line_number)
+        exit(-1)
+
+def call_main_part():
+    global token
+    if token.recognized_string == "#def":
+        token = get_token()
+        if token.recognized_string == "main":
+            token = get_token()
+            declarations()
             statements()
         else:
-            error("closeParentheses") # ) expected
+            print("Error,there is not main at call_main_part in line",token.line_number)
+            exit(-1)
     else:
-        error("openParentheses") # ( expected
+        print("Error,there is not #def at call_main_part in line",token.line_number)
+        exit(-1)
 #Main 
 def main():
     while (not eof):
@@ -470,6 +588,6 @@ keywords={"main","def","#def",
             "print",
             "return",
             "input","int",
-            "not","or","not"}
+            "and","or","not"}
 input_file = open(sys.argv[1],"r") 
 main()
