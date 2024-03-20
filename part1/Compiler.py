@@ -1,3 +1,5 @@
+#KONSTANTINOS-DIONISIOS LAMANIAKOU AM:5110
+#IOANNIS TSOXLAS AM:4993
 import sys
 #class token from 27-MANIS-Handbook-on-Compiler-Design-and-Development Page:41
 class Token:
@@ -296,7 +298,12 @@ def assignment_stat():
     global token
     if token.family == "identifier":
         token=get_token()
-        if token.recognized_string =="=":
+        if token.recognized_string =="(":
+            token=get_token()
+            statement()
+            if token.recognized_string ==")":
+                token=get_token()
+        elif token.recognized_string =="=":
             token=get_token()
             if token.recognized_string =="int":
                 token=get_token()
