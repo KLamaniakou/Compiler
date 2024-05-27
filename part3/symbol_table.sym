@@ -1,0 +1,379 @@
+-------------------------------------------------------------------------------------------------
+
+Scope: main nestingLevel: 0
+     Entity: counterFunctionCalls VARIABLE
+     Offset is :12
+
+     Entity: x VARIABLE
+     Offset is :16
+
+     Entity: y VARIABLE
+     Offset is :20
+
+     Entity: z VARIABLE
+     Offset is :24
+
+     Entity: max3 FUNCTION
+     Framelength of max3 is : 24
+     StartingQuad of max3 is : 1
+
+Scope: max3 nestingLevel: 1
+     Entity: m VARIABLE
+     Offset is :12
+
+     Entity: counterFunctionCalls VARIABLE
+     Offset is :16
+
+     Entity: T0 TEMPORARYVARIABLE
+     Offset is :20
+-------------------------------------------------------------------------------------------------
+
+Scope: main nestingLevel: 0
+     Entity: counterFunctionCalls VARIABLE
+     Offset is :12
+
+     Entity: x VARIABLE
+     Offset is :16
+
+     Entity: y VARIABLE
+     Offset is :20
+
+     Entity: z VARIABLE
+     Offset is :24
+
+     Entity: max3 FUNCTION
+     Framelength of max3 is : 24
+     StartingQuad of max3 is : 1
+
+     Entity: x VARIABLE
+     Offset is :28
+
+     Entity: fib FUNCTION
+     Framelength of fib is : 40
+     StartingQuad of fib is : 18
+
+Scope: fib nestingLevel: 1
+     Entity: counterFunctionCalls VARIABLE
+     Offset is :12
+
+     Entity: T1 TEMPORARYVARIABLE
+     Offset is :16
+
+     Entity: T2 TEMPORARYVARIABLE
+     Offset is :20
+
+     Entity: T3 TEMPORARYVARIABLE
+     Offset is :24
+
+     Entity: T4 TEMPORARYVARIABLE
+     Offset is :28
+
+     Entity: T5 TEMPORARYVARIABLE
+     Offset is :32
+
+     Entity: T6 TEMPORARYVARIABLE
+     Offset is :36
+-------------------------------------------------------------------------------------------------
+
+Scope: main nestingLevel: 0
+     Entity: counterFunctionCalls VARIABLE
+     Offset is :12
+
+     Entity: x VARIABLE
+     Offset is :16
+
+     Entity: y VARIABLE
+     Offset is :20
+
+     Entity: z VARIABLE
+     Offset is :24
+
+     Entity: max3 FUNCTION
+     Framelength of max3 is : 24
+     StartingQuad of max3 is : 1
+
+     Entity: x VARIABLE
+     Offset is :28
+
+     Entity: fib FUNCTION
+     Framelength of fib is : 40
+     StartingQuad of fib is : 18
+
+     Entity: x VARIABLE
+     Offset is :32
+
+     Entity: isPrime FUNCTION
+     Framelength of isPrime is : 0
+     StartingQuad of isPrime is : 41
+
+Scope: isPrime nestingLevel: 1
+     Entity: i VARIABLE
+     Offset is :12
+
+     Entity: x VARIABLE
+     Offset is :16
+
+     Entity: y VARIABLE
+     Offset is :20
+
+     Entity: divides FUNCTION
+     Framelength of divides is : 28
+     StartingQuad of divides is : 42
+
+Scope: divides nestingLevel: 2
+     Entity: counterFunctionCalls VARIABLE
+     Offset is :12
+
+     Entity: T7 TEMPORARYVARIABLE
+     Offset is :16
+
+     Entity: T8 TEMPORARYVARIABLE
+     Offset is :20
+
+     Entity: T9 TEMPORARYVARIABLE
+     Offset is :24
+-------------------------------------------------------------------------------------------------
+
+Scope: main nestingLevel: 0
+     Entity: counterFunctionCalls VARIABLE
+     Offset is :12
+
+     Entity: x VARIABLE
+     Offset is :16
+
+     Entity: y VARIABLE
+     Offset is :20
+
+     Entity: z VARIABLE
+     Offset is :24
+
+     Entity: max3 FUNCTION
+     Framelength of max3 is : 24
+     StartingQuad of max3 is : 1
+
+     Entity: x VARIABLE
+     Offset is :28
+
+     Entity: fib FUNCTION
+     Framelength of fib is : 40
+     StartingQuad of fib is : 18
+
+     Entity: x VARIABLE
+     Offset is :32
+
+     Entity: isPrime FUNCTION
+     Framelength of isPrime is : 40
+     StartingQuad of isPrime is : 41
+
+Scope: isPrime nestingLevel: 1
+     Entity: i VARIABLE
+     Offset is :12
+
+     Entity: x VARIABLE
+     Offset is :16
+
+     Entity: y VARIABLE
+     Offset is :20
+
+     Entity: divides FUNCTION
+     Framelength of divides is : 28
+     StartingQuad of divides is : 42
+
+     Entity: counterFunctionCalls VARIABLE
+     Offset is :24
+
+     Entity: T10 TEMPORARYVARIABLE
+     Offset is :28
+
+     Entity: T11 TEMPORARYVARIABLE
+     Offset is :32
+
+     Entity: T12 TEMPORARYVARIABLE
+     Offset is :36
+-------------------------------------------------------------------------------------------------
+
+Scope: main nestingLevel: 0
+     Entity: counterFunctionCalls VARIABLE
+     Offset is :12
+
+     Entity: x VARIABLE
+     Offset is :16
+
+     Entity: y VARIABLE
+     Offset is :20
+
+     Entity: z VARIABLE
+     Offset is :24
+
+     Entity: max3 FUNCTION
+     Framelength of max3 is : 24
+     StartingQuad of max3 is : 1
+
+     Entity: x VARIABLE
+     Offset is :28
+
+     Entity: fib FUNCTION
+     Framelength of fib is : 40
+     StartingQuad of fib is : 18
+
+     Entity: x VARIABLE
+     Offset is :32
+
+     Entity: isPrime FUNCTION
+     Framelength of isPrime is : 40
+     StartingQuad of isPrime is : 41
+
+     Entity: x VARIABLE
+     Offset is :36
+
+     Entity: quad FUNCTION
+     Framelength of quad is : 0
+     StartingQuad of quad is : 71
+
+Scope: quad nestingLevel: 1
+     Entity: y VARIABLE
+     Offset is :12
+
+     Entity: x VARIABLE
+     Offset is :16
+
+     Entity: sqr FUNCTION
+     Framelength of sqr is : 24
+     StartingQuad of sqr is : 72
+
+Scope: sqr nestingLevel: 2
+     Entity: counterFunctionCalls VARIABLE
+     Offset is :12
+
+     Entity: T13 TEMPORARYVARIABLE
+     Offset is :16
+
+     Entity: T14 TEMPORARYVARIABLE
+     Offset is :20
+-------------------------------------------------------------------------------------------------
+
+Scope: main nestingLevel: 0
+     Entity: counterFunctionCalls VARIABLE
+     Offset is :12
+
+     Entity: x VARIABLE
+     Offset is :16
+
+     Entity: y VARIABLE
+     Offset is :20
+
+     Entity: z VARIABLE
+     Offset is :24
+
+     Entity: max3 FUNCTION
+     Framelength of max3 is : 24
+     StartingQuad of max3 is : 1
+
+     Entity: x VARIABLE
+     Offset is :28
+
+     Entity: fib FUNCTION
+     Framelength of fib is : 40
+     StartingQuad of fib is : 18
+
+     Entity: x VARIABLE
+     Offset is :32
+
+     Entity: isPrime FUNCTION
+     Framelength of isPrime is : 40
+     StartingQuad of isPrime is : 41
+
+     Entity: x VARIABLE
+     Offset is :36
+
+     Entity: quad FUNCTION
+     Framelength of quad is : 40
+     StartingQuad of quad is : 71
+
+Scope: quad nestingLevel: 1
+     Entity: y VARIABLE
+     Offset is :12
+
+     Entity: x VARIABLE
+     Offset is :16
+
+     Entity: sqr FUNCTION
+     Framelength of sqr is : 24
+     StartingQuad of sqr is : 72
+
+     Entity: counterFunctionCalls VARIABLE
+     Offset is :20
+
+     Entity: T15 TEMPORARYVARIABLE
+     Offset is :24
+
+     Entity: T16 TEMPORARYVARIABLE
+     Offset is :28
+
+     Entity: T17 TEMPORARYVARIABLE
+     Offset is :32
+
+     Entity: T18 TEMPORARYVARIABLE
+     Offset is :36
+-------------------------------------------------------------------------------------------------
+
+Scope: main nestingLevel: 0
+     Entity: counterFunctionCalls VARIABLE
+     Offset is :12
+
+     Entity: x VARIABLE
+     Offset is :16
+
+     Entity: y VARIABLE
+     Offset is :20
+
+     Entity: z VARIABLE
+     Offset is :24
+
+     Entity: max3 FUNCTION
+     Framelength of max3 is : 24
+     StartingQuad of max3 is : 1
+
+     Entity: x VARIABLE
+     Offset is :28
+
+     Entity: fib FUNCTION
+     Framelength of fib is : 40
+     StartingQuad of fib is : 18
+
+     Entity: x VARIABLE
+     Offset is :32
+
+     Entity: isPrime FUNCTION
+     Framelength of isPrime is : 40
+     StartingQuad of isPrime is : 41
+
+     Entity: x VARIABLE
+     Offset is :36
+
+     Entity: quad FUNCTION
+     Framelength of quad is : 40
+     StartingQuad of quad is : 71
+
+     Entity: year VARIABLE
+     Offset is :40
+
+     Entity: leap FUNCTION
+     Framelength of leap is : 32
+     StartingQuad of leap is : 90
+
+Scope: leap nestingLevel: 1
+     Entity: counterFunctionCalls VARIABLE
+     Offset is :12
+
+     Entity: T19 TEMPORARYVARIABLE
+     Offset is :16
+
+     Entity: T20 TEMPORARYVARIABLE
+     Offset is :20
+
+     Entity: T21 TEMPORARYVARIABLE
+     Offset is :24
+
+     Entity: T22 TEMPORARYVARIABLE
+     Offset is :28
